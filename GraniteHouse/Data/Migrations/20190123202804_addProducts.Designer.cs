@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GraniteHouse.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20181205144718_addProductTypesToDatabase")]
-    partial class addProductTypesToDatabase
+    [Migration("20190123202804_addProducts")]
+    partial class addProducts
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,35 @@ namespace GraniteHouse.Data.Migrations
                 .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("GraniteHouse.Models.Products", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("Available");
+
+                    b.Property<string>("Image");
+
+                    b.Property<string>("Name");
+
+                    b.Property<double>("Price");
+
+                    b.Property<int>("ProductTypeId");
+
+                    b.Property<string>("ShadeColor");
+
+                    b.Property<int>("SpecialTagsId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductTypeId");
+
+                    b.HasIndex("SpecialTagsId");
+
+                    b.ToTable("Products");
+                });
 
             modelBuilder.Entity("GraniteHouse.Models.ProductTypes", b =>
                 {
@@ -33,6 +62,20 @@ namespace GraniteHouse.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ProductTypes");
+                });
+
+            modelBuilder.Entity("GraniteHouse.Models.SpecialTags", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SpecialTags");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -198,6 +241,19 @@ namespace GraniteHouse.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("GraniteHouse.Models.Products", b =>
+                {
+                    b.HasOne("GraniteHouse.Models.ProductTypes", "ProductTypes")
+                        .WithMany()
+                        .HasForeignKey("ProductTypeId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("GraniteHouse.Models.SpecialTags", "SpecialTags")
+                        .WithMany()
+                        .HasForeignKey("SpecialTagsId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
